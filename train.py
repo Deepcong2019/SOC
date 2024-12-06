@@ -13,16 +13,16 @@ from models import *
 import torch.optim as optim
 import torch
 
-xlsx_path = "./data/*.xlsx"
-X, Y, max_min_values = make_datasets(xlsx_path, time_step=3)
-dataset = MyDataset(X, Y)
+train_xlsx_path = "./data/train_data/*.xlsx"
+X, Y, train_max_min_values = make_datasets(train_xlsx_path, time_step=3)
+train_dataset = MyDataset(X, Y)
 
-# 数据集划分比例
-train_size = int(0.8 * len(dataset))  # 80% 用于训练
-val_size = len(dataset) - train_size  # 20% 用于验证
 
-# 使用 random_split 划分数据集
-train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+val_xlsx_path = "./data/val_data/*.xlsx"
+X, Y, val_max_min_values = make_datasets(train_xlsx_path, time_step=3)
+val_dataset = MyDataset(X, Y)
+
+
 # 使用DataLoader加载数据
 batch_size = 16
 train_dataloader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -51,6 +51,8 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 训练过程
 num_epochs = 200
+# 初始化最好的损失值
+best_loss = float('inf')  # 最好的损失（初始为正无穷大）
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
@@ -87,5 +89,11 @@ for epoch in range(num_epochs):
     avg_val_loss = val_loss / len(val_dataloader)
     print(f"Validation Loss: {avg_val_loss:.4f}")
 
+    # 如果当前验证损失比之前的最小损失低，保存模型
+    if val_loss < best_loss:
+        best_loss = val_loss
+        # 保存模型
+        torch.save(model.state_dict(), 'best_model.pth')
+        print(f"Model saved with validation loss: {val_loss}")
 
 

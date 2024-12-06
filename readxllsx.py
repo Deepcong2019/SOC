@@ -50,9 +50,9 @@ def find_max_min(data_list):
 # 创建时序数据集，使用前n个电压值来预测剩余电量
 def create_dataset(voltage, soc, time_step=1):
     x, y = [], []
-    for i in range(len(voltage) - time_step):
+    for i in range(len(voltage) - time_step + 1):
         x.append(voltage[i:(i + time_step)])
-        y.append(soc[i + time_step])  # 使用n个时间步的电压来预测当前时刻的剩余电量
+        y.append(soc[i + time_step-1])  # 使用n个时间步的电压来预测当前时刻的剩余电量
     return np.array(x), np.array(y)
 
 def make_datasets(xl_path, time_step):
