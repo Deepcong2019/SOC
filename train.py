@@ -17,7 +17,10 @@ dataset = MyDataset(X, Y)
 dataloader = DataLoader(dataset, batch_size=16, shuffle=True)
 
 # 迭代加载数据
-for batch_idx, (features, labels) in enumerate(dataloader):
-    print(f"Batch {batch_idx+1}")
-    print(f"Features: {features}")
-    print(f"Labels: {labels}")
+# for batch_idx, (features, labels) in enumerate(dataloader):
+#     print(f"Batch {batch_idx+1}")
+#     print(f"Features: {features}")
+#     print(f"Labels: {labels}")
+
+
+
