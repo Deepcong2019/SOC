@@ -34,9 +34,9 @@ test_datasets = [torch.tensor(test_datasets[i], dtype=torch.float32) for i in ra
 
 # 参数设置
 input_size = 1  # 输入的特征数量
-hidden_size = 64  # LSTM隐藏层的大小
+hidden_size = 128  # LSTM隐藏层的大小
 output_size = 1  # 输出的类别数
-num_layers = 1  # LSTM的层数
+num_layers = 2  # LSTM的层数
 
 model = LSTMModel(input_size, hidden_size, output_size)
 model.load_state_dict(torch.load('best_model.pth'))

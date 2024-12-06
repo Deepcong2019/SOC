@@ -34,9 +34,9 @@ for batch_idx, (features, labels) in enumerate(train_dataloader):
     print(f"Labels: {labels}")
 # 参数设置
 input_size = 1  # 输入的特征数量
-hidden_size = 64  # LSTM隐藏层的大小
+hidden_size = 128  # LSTM隐藏层的大小
 output_size = 1  # 输出的类别数
-num_layers = 1  # LSTM的层数
+num_layers = 2  # LSTM的层数
 
 # 创建模型
 model = LSTMModel(input_size, hidden_size, output_size)
@@ -50,7 +50,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # 训练过程
-num_epochs = 200
+num_epochs = 1000
 # 初始化最好的损失值
 best_loss = float('inf')  # 最好的损失（初始为正无穷大）
 for epoch in range(num_epochs):
@@ -72,7 +72,7 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item()
+        running_loss += loss.item()*1000000000
 
     avg_loss = running_loss / len(train_dataloader)
     print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {avg_loss:.4f}")
@@ -86,7 +86,7 @@ for epoch in range(num_epochs):
             loss = criterion(val_outputs, val_labels)
             val_loss += loss.item()
 
-    avg_val_loss = val_loss / len(val_dataloader)
+    avg_val_loss = val_loss / len(val_dataloader) *1000000000
     print(f"Validation Loss: {avg_val_loss:.4f}")
 
     # 如果当前验证损失比之前的最小损失低，保存模型
