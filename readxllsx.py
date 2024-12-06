@@ -55,13 +55,14 @@ def create_dataset(voltage, soc, time_step=1):
         y.append(soc[i + time_step])  # 使用n个时间步的电压来预测当前时刻的剩余电量
     return np.array(x), np.array(y)
 
-def make_datasets(xl_path):
+def make_datasets(xl_path, time_step):
+    max_min_values = []
     discharge_datas = read_xlsx(xl_path)
     vol_datas = discharge_datas[0]
     vol_max, vol_min = find_max_min(vol_datas)
     cap_datas = discharge_datas[1]
     cap_max, cap_min = find_max_min(cap_datas)
-
+    max_min_values.append([vol_max, vol_min, cap_max, cap_min])
     # 数据进行Max-Min 归一化
     vol_normalized_datas = [(data - vol_min) / (vol_max - vol_min) for data in vol_datas]
     cal_normalized_datas = [(data - cap_min) / (cap_max - cap_min) for data in cap_datas]
@@ -69,12 +70,12 @@ def make_datasets(xl_path):
     datasets = []
     labels = []
     for k in range(len(vol_normalized_datas)):
-        xs, ys = create_dataset(vol_normalized_datas[k], cal_normalized_datas[k], time_step=3)
+        xs, ys = create_dataset(vol_normalized_datas[k], cal_normalized_datas[k], time_step=time_step)
         datasets.append(xs)
         labels.append(ys)
 
-    x_ = np.vstack(datasets)
+    x_ = np.expand_dims(np.vstack(datasets), axis=-1)
     y_ = np.hstack(labels)
 
-    return x_, y_
+    return x_, y_, max_min_values
 
